@@ -12,7 +12,7 @@ To install the listed CLI prerequisites, explicitly run:
 bash wsl/bootstrap.sh --install
 ```
 
-The WSL package names are in [`packages.json`](packages.json), which is generated from [`tools.yaml`](../tools.yaml); edit that file and run `just tools-render`, do not hand-edit `packages.json`. By default, the script installs current versions from Ubuntu's configured apt sources and the official GitHub CLI apt repository; package versions are not pinned. The current WSL setup has Git, curl, CA certificates, unzip, and GitHub CLI installed. It does **not** install a Docker daemon, add Docker groups, configure Git identity, or run `gh auth login`.
+The WSL package names are in [`wsl/packages.json`](packages.json), which is generated from [`tools.yaml`](../tools.yaml); edit that file and run `just tools-render`, do not hand-edit `wsl/packages.json`. By default, the script installs current versions from Ubuntu's configured apt sources and the official GitHub CLI apt repository; package versions are not pinned. The current WSL setup has Git, curl, CA certificates, unzip, and GitHub CLI installed. It does **not** install a Docker daemon, add Docker groups, configure Git identity, or run `gh auth login`.
 
 ## Docker Engine in WSL (Windows 10 laptop)
 
@@ -60,12 +60,6 @@ bash wsl/cleanup-opencode-sessions.sh --apply     # delete them
 
 Options: `--days N` (default 30), `--directory PATH` (default the workspace), `--max N`. The script uses `opencode session list --format json` and `opencode session delete`.
 
-OpenCode runtime configuration and PStack moved to [`../simpsonm09-maxstack`](../simpsonm09-maxstack). They apply only under `/mnt/d/dev/simpsonm09`. The Windows `Install-Workspace.ps1` script is the single writer for those files; WSL reads them. To remove the earlier global install in WSL, preview and run:
-
-```bash
-bash /mnt/d/dev/simpsonm09/projects/repos/simpsonm09-maxstack/scripts/remove-global-pstack.sh
-```
-
-Pass `--apply` to remove the matched links and files. Provider credentials remain in the local OpenCode auth store.
+OpenCode runtime configuration and PStack are maintained in the separate `simpsonm09-maxstack` repository. Follow that repository's current documentation for workspace setup and removal. Provider credentials remain in the local OpenCode auth store.
 
 GitHub Desktop is the primary pull/push UI. `gh` is for CLI-only workflows; authenticate it separately if/when you need those workflows. Git identity is per-user local setup: preserve an existing identity; if absent, prompt locally for name/email before making commits rather than hardcoding or asking the user to post it in chat.
