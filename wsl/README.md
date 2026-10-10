@@ -1,6 +1,6 @@
 # WSL / Ubuntu setup
 
-Supported starting point: Ubuntu 26.04 LTS under WSL2. First audit without changes:
+Supported starting point: Ubuntu 26.04 LTS under WSL2. Run these commands from the repository root. First audit without changes:
 
 ```bash
 bash wsl/bootstrap.sh
@@ -18,16 +18,16 @@ The WSL package names are in [`wsl/packages.json`](packages.json), which is gene
 
 The active Windows 10 laptop uses Docker Engine inside Ubuntu WSL2 rather than Docker Desktop. Ubuntu 26.04 is supported by Docker's official [Ubuntu Engine install guide](https://docs.docker.com/engine/install/ubuntu/), and this distro has systemd enabled. The optional [`install-docker-engine.sh`](install-docker-engine.sh) uses Docker's official apt repository and installs its latest stable packages without version pins. It does not add the user to the `docker` group; use `sudo docker` initially because that group grants root-equivalent access.
 
-On the current laptop, Ubuntu has already been moved to `D:\WSL\Ubuntu`. On another machine with constrained C: space, move the distro there before installing Docker so the VHDX-backed data is stored on D:. From **Windows PowerShell**, with Ubuntu WSL sessions stopped, run:
+On a machine with constrained system-drive space, choose a suitable absolute location for the distro before installing Docker. From **Windows PowerShell**, with Ubuntu WSL sessions stopped, replace the placeholder with that location:
 
 ```powershell
 wsl --terminate Ubuntu
-wsl --manage Ubuntu --move "D:\WSL\Ubuntu"
+wsl --manage Ubuntu --move "<wsl-location>"
 ```
 
-Then reopen Ubuntu, preview with `bash wsl/install-docker-engine.sh`, and explicitly install with `bash wsl/install-docker-engine.sh --install`. Do not install Docker Desktop or enable its Ubuntu integration alongside this engine. The current laptop's systemd service is enabled/running; `hello-world`, Compose, and a bind mount from `/mnt/d/dev/simpsonm09` were verified. Use `sudo docker` initially; no root-equivalent Docker group was added.
+Then reopen Ubuntu, preview with `bash wsl/install-docker-engine.sh`, and explicitly install with `bash wsl/install-docker-engine.sh --install`. Do not install Docker Desktop or enable its Ubuntu integration alongside this engine. The current laptop's systemd service is enabled/running; `hello-world`, Compose, and a workspace bind mount were verified. Use `sudo docker` initially; no root-equivalent Docker group was added.
 
-Container images/layers/cache and named volumes live inside the Ubuntu WSL virtual disk on D: (`/var/lib/docker` and related engine storage); bind-mounted project files remain on D: at their source paths. Do not edit the engine's internal volume directories from Windows Explorer.
+Container images/layers/cache and named volumes live inside the Ubuntu WSL virtual disk (`/var/lib/docker` and related engine storage); bind-mounted project files remain at their source paths. Do not edit the engine's internal volume directories from Windows Explorer.
 
 The Windows 11 desktop is deferred and can choose Docker Desktop or the same WSL Engine approach after its own drive/support check; do not run both backends together on one WSL distro.
 
@@ -41,7 +41,7 @@ Run `opencode --version` from an interactive Ubuntu shell after installation. Th
 
 ## Bun (PStack skill scripts)
 
-The PStack `poteto-mode` scripts `orch` and `watch-pr` need Bun. Install it under `~/.bun` on ext4, not on `/mnt`:
+To install Bun for skill scripts, run the optional installer. It defaults to `~/.bun` on ext4, not on `/mnt`:
 
 ```bash
 bash wsl/install-bun.sh
