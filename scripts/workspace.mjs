@@ -44,7 +44,7 @@ function act(verb, target) {
 }
 
 function spawn(cmd, argv, cwd) {
-  const result = spawnSync(cmd, argv, { cwd, stdio: 'inherit' });
+  const result = spawnSync(cmd, argv, { windowsHide: true, cwd, stdio: 'inherit' });
   if (result.error || result.status !== 0) {
     failures += 1;
     process.stderr.write(`fail  ${cmd} ${argv.join(' ')}\n`);
@@ -66,7 +66,7 @@ function clone(name) {
 }
 
 function hasRemote(dir, name) {
-  const result = spawnSync('git', ['remote'], { cwd: dir, encoding: 'utf8' });
+  const result = spawnSync('git', ['remote'], { windowsHide: true, cwd: dir, encoding: 'utf8' });
   return result.status === 0 && result.stdout.split('\n').includes(name);
 }
 
@@ -83,7 +83,7 @@ function addUpstream(name) {
 }
 
 function refExists(dir, ref) {
-  return spawnSync('git', ['rev-parse', '--verify', '--quiet', ref], { cwd: dir }).status === 0;
+  return spawnSync('git', ['rev-parse', '--verify', '--quiet', ref], { windowsHide: true, cwd: dir }).status === 0;
 }
 
 // A history rewrite (filter-repo) or a rebuilt branch drops branch.main.*, which
@@ -99,7 +99,7 @@ function ensureTracking(name) {
   const result = spawnSync(
     'git',
     ['for-each-ref', '--format=%(upstream:short)', 'refs/heads/main'],
-    { cwd: dir, encoding: 'utf8' },
+    { windowsHide: true, cwd: dir, encoding: 'utf8' },
   );
   if ((result.stdout ?? '').trim() === 'origin/main') {
     return true;

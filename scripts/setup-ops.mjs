@@ -96,7 +96,7 @@ export function commandFor(operation, host, args) {
 export function dispatch(operation, args, { host = PLATFORM, spawn = spawnSync } = {}) {
   const { error, command, status } = commandFor(operation, host, args);
   if (error) return { status, error };
-  const result = spawn(command[0], command.slice(1), { cwd: ROOT, stdio: 'inherit' });
+  const result = spawn(command[0], command.slice(1), { windowsHide: true, cwd: ROOT, stdio: 'inherit' });
   if (result.error) return { status: 1, error: `cannot run ${command[0]}: ${result.error.message}` };
   return { status: result.status ?? 1 };
 }
