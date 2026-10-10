@@ -34,7 +34,7 @@ Docker Desktop is an optional future Windows 11 backend. It is not the active Wi
 
 The script checks the host build and architecture; on Windows 10 it also requires `-Windows10ServicingVerified` after checking current Docker support/servicing. Do not use that override based only on the build number. Never enable Docker Desktop WSL integration in a distro that also runs a separate Docker Engine daemon.
 
-The script checks that the requested workspace drive is available and stops if it is absent. Resolve that requirement locally before installing. By default, winget installs the current version from its configured source. An optional `version` value in `windows/apps.json` applies only to new installs; existing installations are detected and left unchanged.
+The script checks the drive of `-WorkspaceRoot`, which defaults to the workspace on D:. If the required drive is absent, stop and ask before proceeding. Pass a confirmed root with `-WorkspaceRoot '<workspace-root>'`; the option does not create a drive or select a fallback. By default, winget installs the current version from its configured source. An optional `version` value in `windows/apps.json` applies only to new installs; existing installations are detected and left unchanged.
 
 ## Global Zed settings
 
