@@ -37,7 +37,7 @@ OpenCode is installed separately from the package bootstrap. Install it with the
 curl -fsSL https://opencode.ai/v2/install | bash
 ```
 
-Run `opencode --version` from an interactive Ubuntu shell after installation. The installer adds its binary directory to `.bashrc`; non-interactive shells may need to use the installed binary path or load the interactive shell environment. Authenticate interactively after install; do not put auth data in this repository.
+Run `opencode --version` from an interactive Ubuntu shell after installation. Follow the installer's shell setup instructions; non-interactive shells may need to use the installed binary path or load the interactive shell environment. Authenticate interactively after install; do not put auth data in this repository.
 
 ## Bun (PStack skill scripts)
 
@@ -47,7 +47,7 @@ To install Bun for skill scripts, run the optional installer. It defaults to `~/
 bash wsl/install-bun.sh
 ```
 
-The installer adds `~/.bun/bin` to `.bashrc`. Verify with `bun --version` in a new shell.
+The script prints shell setup guidance for the installed Bun binary directory, which defaults to `~/.bun/bin`. Verify with `bun --version` in a new shell.
 
 ## OpenCode session cleanup
 
