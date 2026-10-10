@@ -60,11 +60,11 @@ function runShPlanDarwin() {
     'export -f uname',
     'bash scripts/apply-tools.sh plan',
   ].join('\n');
-  return spawnSync('bash', ['-c', script], { cwd: REPO_ROOT, encoding: 'utf8' });
+  return spawnSync('bash', ['-c', script], { windowsHide: true, cwd: REPO_ROOT, encoding: 'utf8' });
 }
 
 function runCli(command) {
-  return spawnSync(process.execPath, [TOOLS_CLI, command], { cwd: REPO_ROOT, encoding: 'utf8' });
+  return spawnSync(process.execPath, [TOOLS_CLI, command], { windowsHide: true, cwd: REPO_ROOT, encoding: 'utf8' });
 }
 
 test('tools.yaml is valid and every claimed platform resolves', () => {
@@ -288,7 +288,7 @@ test('the sh plan agrees with the node plan on the action set for every tool', (
   // From Windows node, dpkg-query and snap are unreachable, so the presence
   // check legitimately differs from the shell plan's.
   if (process.platform !== 'linux') return;
-  const wsl = spawnSync('bash', ['scripts/apply-tools.sh', 'plan'], { cwd: REPO_ROOT, encoding: 'utf8' });
+  const wsl = spawnSync('bash', ['scripts/apply-tools.sh', 'plan'], { windowsHide: true, cwd: REPO_ROOT, encoding: 'utf8' });
   if (wsl.error) return;
   assert.equal(wsl.status, 0, wsl.stderr);
   assert.deepEqual(
@@ -311,18 +311,19 @@ test('the sh twin exits non-zero when an install fails', () => {
     '[ -x "$d/sudo" ] || exit 99',
     'PATH="$d:$PATH" bash scripts/apply-tools.sh apply',
   ].join('\n');
-  const result = spawnSync('bash', ['-s'], { cwd: REPO_ROOT, encoding: 'utf8', input: script });
+  const result = spawnSync('bash', ['-s'], { windowsHide: true, cwd: REPO_ROOT, encoding: 'utf8', input: script });
   if (result.error) return;
   assert.equal(result.status, 1, result.stderr);
 });
 
 test('the ps1 twin exits non-zero when an install fails', (t) => {
-  const probe = spawnSync('pwsh', ['-Command', '(Get-Command pwsh).Source'], { encoding: 'utf8' });
+  const probe = spawnSync('pwsh', ['-Command', '(Get-Command pwsh).Source'], { windowsHide: true, encoding: 'utf8' });
   if (probe.error || probe.status !== 0) return t.skip('pwsh is not available');
   const stub = mkdtempSync(join(tmpdir(), 'tools-ps1-'));
   try {
     writeFileSync(join(stub, 'npm.cmd'), '@echo off\r\nexit /b 1\r\n');
     const result = spawnSync(probe.stdout.trim(), ['-File', 'scripts/apply-tools.ps1', 'apply'], {
+      windowsHide: true,
       cwd: REPO_ROOT,
       encoding: 'utf8',
       env: { ...process.env, PATH: stub },

@@ -285,7 +285,7 @@ function main() {
 
 function run(command, args) {
   try {
-    return spawnSync(command, args, { encoding: 'utf8', timeout: 15000 });
+    return spawnSync(command, args, { windowsHide: true, encoding: 'utf8', timeout: 15000 });
   } catch {
     return { status: null, stdout: '' };
   }
