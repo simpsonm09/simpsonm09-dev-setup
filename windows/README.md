@@ -1,9 +1,8 @@
 # Windows host setup
 
-Prefer winget for Windows installs. The script uses exact package IDs from `apps.json`, and is intentionally audit-only by default. `apps.json` is generated from [`tools.yaml`](../tools.yaml); edit that file and run `just tools-render`, do not hand-edit `apps.json`. Run from PowerShell on each device:
+Prefer winget for Windows installs. The script uses exact package IDs from [`windows/apps.json`](apps.json), and is intentionally audit-only by default. That manifest is generated from [`tools.yaml`](../tools.yaml); edit that file and run `just tools-render`, do not hand-edit `windows/apps.json`. Run from PowerShell at the repository root on each device:
 
 ```powershell
-Set-Location D:\dev\simpsonm09\projects\repos\simpsonm09-dev-setup
 .\windows\Install-Apps.ps1
 ```
 
@@ -35,7 +34,7 @@ Docker Desktop is an optional future Windows 11 backend. It is not the active Wi
 
 The script checks the host build and architecture; on Windows 10 it also requires `-Windows10ServicingVerified` after checking current Docker support/servicing. Do not use that override based only on the build number. Never enable Docker Desktop WSL integration in a distro that also runs a separate Docker Engine daemon.
 
-The script checks that the requested `D:\dev\simpsonm09` root is available; if `D:` is absent, it stops. Ask the user for an alternate path rather than guessing. By default, winget installs the current version from its configured source. An optional `version` value in `apps.json` applies only to new installs; existing installations are detected and left unchanged.
+The script checks the drive of `-WorkspaceRoot`, which defaults to the workspace on D:. If the required drive is absent, stop and ask before proceeding. Pass a confirmed root with `-WorkspaceRoot '<workspace-root>'`; the option does not create a drive or select a fallback. By default, winget installs the current version from its configured source. An optional `version` value in `windows/apps.json` applies only to new installs; existing installations are detected and left unchanged.
 
 ## Global Zed settings
 
@@ -49,25 +48,10 @@ Apply it with `-Apply`. The script refuses to change settings while Zed is runni
 
 ## OpenCode and PStack
 
-OpenCode runtime configuration and PStack moved to [`../simpsonm09-maxstack`](../simpsonm09-maxstack). They apply only under `D:\dev\simpsonm09`. Preview the workspace bundle with:
-
-```powershell
-..\maxstack\scripts\Install-Workspace.ps1
-```
-
-Apply it with `-Apply`. It writes the workspace `opencode.jsonc`, installs the `pstack` plugin under `.opencode\plugins`, and installs the agent profiles under `.opencode\agents`. The plugin registers the pinned PStack skills and injects the routing instruction. Provider credentials stay in OpenCode's local auth store. T3 Code's own settings and thread state are not included; see [`docs/app-settings.md`](../docs/app-settings.md). T3 Code drives the OpenCode and Claude Code providers; its Claude plugin composition is documented in `maxstack`.
-
-Do not install PStack globally. To remove the earlier global install, run `..\maxstack\scripts\Remove-GlobalPstack.ps1` on Windows and `bash scripts/remove-global-pstack.sh` inside Ubuntu WSL. Both preview first and refuse to delete content they do not recognize.
+OpenCode runtime configuration and PStack are maintained in the separate `simpsonm09-maxstack` repository. Follow that repository's current documentation for workspace setup and removal. Provider credentials stay in OpenCode's local auth store. T3 Code's own settings and thread state are not included; see [`docs/app-settings.md`](../docs/app-settings.md). T3 Code drives the OpenCode and Claude Code providers; its Claude plugin composition is maintained with maxstack.
 
 New Postman installs use the current winget version. The current laptop is on 12.29.5; existing installations on other machines are preserved until deliberately upgraded.
 
 ## Microsoft Store apps
 
 The current laptop has both the current OneNote Store app (`XPFFZHVGQWWLHB`) and legacy **OneNote for Windows 10**. Let OneNote handle account-based notebook sync; this bootstrap must not export, copy, or delete notebooks.
-
-## Docker settings
-
-- Docker Desktop WSL2 backend; enable integration for the Ubuntu distro.
-- Linux containers only; Windows containers are out of scope unless a project later requires them.
-- Do not install `docker.io`, `docker-ce`, or another daemon inside Ubuntu in parallel.
-- Validate Docker CLI/Compose and a bind mount. If the D: mount is too slow for a project, ask before choosing a WSL-native source location.
